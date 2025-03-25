@@ -12,15 +12,6 @@ public class UserMother
 {
     private static final UUID id = UUID.fromString("f4b3b8b9-13e2-4b52-bc5e-6e5c2e5c19b2");
 
-    public static User getPayloadUser()
-    {
-        return User.builder()
-                .names("John")
-                .surnames("Doe")
-                .email("john.doe@email.com")
-                .build();
-    }
-
     public static User getUser()
     {
         return User.builder()
