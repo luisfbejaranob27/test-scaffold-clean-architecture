@@ -28,6 +28,7 @@ repositories {
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-validation")
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("com.h2database:h2")
@@ -44,11 +45,13 @@ tasks.withType<Test> {
 tasks.jacocoTestReport {
 	dependsOn(tasks.test)
 	reports {
-		xml.required.set(true) // Para SonarQube
+		xml.required.set(true)
 		csv.required.set(false)
 		html.required.set(true)
 	}
 }
+
+val sonarToken: String? by project
 
 sonarqube {
 	properties {
@@ -56,7 +59,7 @@ sonarqube {
 		property("sonar.projectName", "test-scaffold-clean-architecture")
 		property("sonar.projectVersion", "1.0")
 		property("sonar.host.url", "http://localhost:9000")
-		property("sonar.login", "sqp_be29950c13af8ff5f9ee25e0f86a5be780248e78")
+		sonarToken?.let { property("sonar.login", it) }
 		property("sonar.coverage.jacoco.xmlReportPaths", "${project.layout.buildDirectory}/reports/jacoco/test/jacocoTestReport.xml")
 		property("sonar.exclusions", "**/ObjectUtil.java")
 		property("sonar.coverage.exclusions", "**/TestScaffoldCleanArchitectureApplication.java, **/GlobalExceptionHandler.java")

@@ -1,9 +1,11 @@
 package code.luisfbejaranob.scaffold_clean_architecture.infrastructure.entry_points;
 
 import code.luisfbejaranob.scaffold_clean_architecture.application.ports.in.UserUseCase;
+import code.luisfbejaranob.scaffold_clean_architecture.application.usecases.dtos.UserRequestDto;
+import code.luisfbejaranob.scaffold_clean_architecture.application.usecases.dtos.UserResponseDto;
 import code.luisfbejaranob.scaffold_clean_architecture.domain.exceptions.UserNotFoundException;
-import code.luisfbejaranob.scaffold_clean_architecture.domain.models.User;
 import code.luisfbejaranob.scaffold_clean_architecture.infrastructure.shared.dtos.ApiErrorDto;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -27,15 +29,15 @@ public class UserController
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user)
+    public ResponseEntity<UserResponseDto> createUser(@RequestBody @Valid UserRequestDto dto)
     {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(userUseCase.createUser(user));
+                .body(userUseCase.createUser(dto));
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<User> getUserById(@PathVariable UUID id)
+    public ResponseEntity<UserResponseDto> getUserById(@PathVariable UUID id)
     {
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -43,7 +45,7 @@ public class UserController
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers()
+    public ResponseEntity<List<UserResponseDto>> getAllUsers()
     {
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -51,11 +53,11 @@ public class UserController
     }
 
     @PutMapping
-    public ResponseEntity<User> updateUser(@RequestBody User user) throws IllegalAccessException
+    public ResponseEntity<UserResponseDto> updateUser(@RequestBody @Valid UserRequestDto dto) throws IllegalAccessException
     {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(userUseCase.updateUser(user));
+                .body(userUseCase.updateUser(dto));
     }
 
     @DeleteMapping("{id}")

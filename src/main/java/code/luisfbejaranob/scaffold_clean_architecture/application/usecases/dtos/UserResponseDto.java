@@ -1,5 +1,6 @@
-package code.luisfbejaranob.scaffold_clean_architecture.domain.models;
+package code.luisfbejaranob.scaffold_clean_architecture.application.usecases.dtos;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -10,8 +11,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-@EqualsAndHashCode
-public class User
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class UserResponseDto
 {
     private UUID id;
     private String names;

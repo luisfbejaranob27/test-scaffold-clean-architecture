@@ -1,8 +1,8 @@
 package code.luisfbejaranob.scaffold_clean_architecture.infrastructure.entry_points;
 
 import code.luisfbejaranob.scaffold_clean_architecture.application.ports.in.UserUseCase;
+import code.luisfbejaranob.scaffold_clean_architecture.application.usecases.dtos.UserRequestDto;
 import code.luisfbejaranob.scaffold_clean_architecture.domain.exceptions.UserNotFoundException;
-import code.luisfbejaranob.scaffold_clean_architecture.domain.models.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +33,9 @@ class UserControllerTest
     void createUser() throws Exception
     {
         var payload = UserMother.getPayloadUser();
-        var reference = UserMother.getUser();
+        var reference = UserMother.getUserResponseDto();
 
-        given(useCase.createUser(any(User.class))).willReturn(reference);
+        given(useCase.createUser(any(UserRequestDto.class))).willReturn(reference);
 
         mockMvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -45,13 +45,13 @@ class UserControllerTest
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(reference.getId().toString()));
 
-        then(useCase).should(times(1)).createUser(any(User.class));
+        then(useCase).should(times(1)).createUser(any(UserRequestDto.class));
     }
 
     @Test
     void getUserById() throws Exception
     {
-        var reference = UserMother.getUser();
+        var reference = UserMother.getUserResponseDto();
         var id = reference.getId();
         given(useCase.getUserById(id)).willReturn(reference);
 
@@ -68,7 +68,7 @@ class UserControllerTest
     @Test
     void getUserByIdThrowUserNotFoundException() throws Exception
     {
-        var id = UserMother.getUser().getId();
+        var id = UserMother.getUserRequestDto().getId();
         given(useCase.getUserById(id)).willThrow(new UserNotFoundException(id));
 
         mockMvc.perform(get("/users/%s".formatted(id))
@@ -82,7 +82,7 @@ class UserControllerTest
     @Test
     void getAllUsers() throws Exception
     {
-        var reference = UserMother.getUsers();
+        var reference = UserMother.getUsersResponseDto();
         given(useCase.getAllUsers()).willReturn(reference);
 
         mockMvc.perform(get("/users")
@@ -112,9 +112,10 @@ class UserControllerTest
     @Test
     void updateUser() throws Exception
     {
-        var payload = UserMother.getUserPayloadUpdated();
-        var reference = UserMother.getUserUpdated();
-        given(useCase.updateUser(any(User.class))).willReturn(reference);
+        var payload = UserMother.getUserRequestUpdateDto();
+        var reference = UserMother.getUserResponseDto();
+        reference.setEmail(payload.getEmail());
+        given(useCase.updateUser(any(UserRequestDto.class))).willReturn(reference);
 
         mockMvc.perform(put("/users")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -124,14 +125,14 @@ class UserControllerTest
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.email").value(reference.getEmail()));
 
-        then(useCase).should(times(1)).updateUser(any(User.class));
+        then(useCase).should(times(1)).updateUser(any(UserRequestDto.class));
     }
 
     @Test
     void updateUserThrowUserNotFoundException() throws Exception
     {
         var payload = UserMother.getUserPayloadUpdated();
-        given(useCase.updateUser(any(User.class))).willThrow(new UserNotFoundException());
+        given(useCase.updateUser(any(UserRequestDto.class))).willThrow(new UserNotFoundException());
 
         mockMvc.perform(put("/users")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -139,7 +140,7 @@ class UserControllerTest
                 .andDo(print())
                 .andExpect(status().isNotFound());
 
-        then(useCase).should(times(1)).updateUser(any(User.class));
+        then(useCase).should(times(1)).updateUser(any(UserRequestDto.class));
     }
 
     @Test

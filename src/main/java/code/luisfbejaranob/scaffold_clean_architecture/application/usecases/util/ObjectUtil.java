@@ -1,4 +1,4 @@
-package code.luisfbejaranob.scaffold_clean_architecture.application.usecases.shared;
+package code.luisfbejaranob.scaffold_clean_architecture.application.usecases.util;
 
 import java.lang.reflect.Field;
 

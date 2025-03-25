@@ -1,16 +1,19 @@
 package code.luisfbejaranob.scaffold_clean_architecture.application.usecases;
 
+import code.luisfbejaranob.scaffold_clean_architecture.application.usecases.dtos.UserRequestDto;
+import code.luisfbejaranob.scaffold_clean_architecture.application.usecases.dtos.UserResponseDto;
 import code.luisfbejaranob.scaffold_clean_architecture.application.ports.in.UserUseCase;
 import code.luisfbejaranob.scaffold_clean_architecture.application.ports.out.UserRepositoryPort;
+import code.luisfbejaranob.scaffold_clean_architecture.application.usecases.mappers.UserMapper;
 import code.luisfbejaranob.scaffold_clean_architecture.domain.exceptions.UserNotFoundException;
-import code.luisfbejaranob.scaffold_clean_architecture.domain.models.User;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import static code.luisfbejaranob.scaffold_clean_architecture.application.usecases.shared.ObjectUtil.updateValues;
+import static code.luisfbejaranob.scaffold_clean_architecture.application.usecases.mappers.UserMapper.*;
+import static code.luisfbejaranob.scaffold_clean_architecture.application.usecases.util.ObjectUtil.updateValues;
 
 @Service
 public class UserUseCaseImpl implements UserUseCase
@@ -23,34 +26,35 @@ public class UserUseCaseImpl implements UserUseCase
     }
 
     @Override
-    public User createUser(User user)
+    public UserResponseDto createUser(UserRequestDto dto)
     {
+        var user = toDomain(dto);
         user.setCreateAt(LocalDateTime.now());
-        return userRepositoryPort.save(user);
+        return toDto(userRepositoryPort.save(user));
     }
 
     @Override
-    public User getUserById(UUID id)
+    public UserResponseDto getUserById(UUID id)
     {
-        return userRepositoryPort.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+        return toDto(userRepositoryPort.findById(id).orElseThrow(() -> new UserNotFoundException(id)));
     }
 
     @Override
-    public List<User> getAllUsers()
+    public List<UserResponseDto> getAllUsers()
     {
         var users = userRepositoryPort.findAll();
         if (users.isEmpty())
         {
             throw new UserNotFoundException();
         }
-        return users;
+        return users.stream().map(UserMapper::toDto).toList();
     }
 
     @Override
-    public User updateUser(User user) throws IllegalAccessException
+    public UserResponseDto updateUser(UserRequestDto dto) throws IllegalAccessException
     {
-        var userFound = getUserById(user.getId());
-        return userRepositoryPort.save(updateValues(userFound, user));
+        var userFound = toDomain(getUserById(dto.getId()));
+        return toDto(userRepositoryPort.save(updateValues(userFound, toDomain(dto))));
     }
 
     @Override

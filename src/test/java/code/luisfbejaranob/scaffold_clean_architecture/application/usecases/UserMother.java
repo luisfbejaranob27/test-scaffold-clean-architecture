@@ -1,5 +1,7 @@
 package code.luisfbejaranob.scaffold_clean_architecture.application.usecases;
 
+import code.luisfbejaranob.scaffold_clean_architecture.application.usecases.dtos.UserRequestDto;
+import code.luisfbejaranob.scaffold_clean_architecture.application.usecases.dtos.UserResponseDto;
 import code.luisfbejaranob.scaffold_clean_architecture.domain.models.User;
 
 import java.time.LocalDateTime;
@@ -36,5 +38,39 @@ public class UserMother
         return List.of(
                 getUser()
         );
+    }
+
+    public static UserRequestDto getUserRequestDto()
+    {
+        return UserRequestDto.builder()
+                .names("John")
+                .surnames("Doe")
+                .email("john.doe@email.com")
+                .createAt(LocalDateTime.parse("2025-03-22T09:16:35.1533816"))
+                .updateAt(null)
+                .build();
+    }
+
+    public static UserRequestDto getUserRequestUpdateDto()
+    {
+        return UserRequestDto.builder()
+                .names("John")
+                .surnames("Doe")
+                .email("john.doe@email.com")
+                .createAt(LocalDateTime.parse("2025-03-22T09:16:35.1533816"))
+                .updateAt(null)
+                .build();
+    }
+
+    public static UserResponseDto getUserResponseDto()
+    {
+        return UserResponseDto.builder()
+                .id(id)
+                .names("John")
+                .surnames("Doe")
+                .email("john.doe@email.com")
+                .createAt(LocalDateTime.parse("2025-03-22T09:16:35.1533816"))
+                .updateAt(null)
+                .build();
     }
 }

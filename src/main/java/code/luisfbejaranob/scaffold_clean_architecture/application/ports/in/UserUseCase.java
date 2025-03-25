@@ -1,15 +1,16 @@
 package code.luisfbejaranob.scaffold_clean_architecture.application.ports.in;
 
-import code.luisfbejaranob.scaffold_clean_architecture.domain.models.User;
+import code.luisfbejaranob.scaffold_clean_architecture.application.usecases.dtos.UserRequestDto;
+import code.luisfbejaranob.scaffold_clean_architecture.application.usecases.dtos.UserResponseDto;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface UserUseCase
 {
-    User createUser(User user);
-    User getUserById(UUID id);
-    List<User> getAllUsers();
-    User updateUser(User user) throws IllegalAccessException;
+    UserResponseDto createUser(UserRequestDto dto);
+    UserResponseDto getUserById(UUID id);
+    List<UserResponseDto> getAllUsers();
+    UserResponseDto updateUser(UserRequestDto dto) throws IllegalAccessException;
     void deleteUser(UUID id);
 }
